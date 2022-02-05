@@ -23,9 +23,7 @@ def test_post_request(url, auth, directory):
                     f"{second_executed.strftime('%m/%d/%Y, %H:%M:%S')},{str(int(round((latency_time.total_seconds() * 1000))))}\n")
 
         else:
-            r = requests.post(f"{url}/_api/document/python", json={"number": str(random_number)}, auth=auth, verify=False)
-            print(r.json())
-            print(r.status_code)
+            requests.post(f"{url}/_api/document/python", json={"number": str(random_number)}, auth=auth, verify=False)
         time.sleep(0.1)
 
 
