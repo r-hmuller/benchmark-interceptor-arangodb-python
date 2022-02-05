@@ -15,7 +15,7 @@ def test_post_request(url, auth, directory):
         if random_logger_number == 3:
             second_executed = datetime.now()
             start_time = datetime.now()
-            requests.post(f"{url}/_api/document/python", data={"number": str(random_number)}, auth=auth, verify=False)
+            requests.post(f"{url}/_api/document/python", json={"number": str(random_number)}, auth=auth, verify=False)
             end_time = datetime.now()
             latency_time = end_time - start_time
             with open(f"{directory}/latencies.txt", 'a+') as latencyFile:
@@ -23,7 +23,9 @@ def test_post_request(url, auth, directory):
                     f"{second_executed.strftime('%m/%d/%Y, %H:%M:%S')},{str(int(round((latency_time.total_seconds() * 1000))))}\n")
 
         else:
-            requests.post(f"{url}/_api/document/python", data={"number": str(random_number)}, auth=auth, verify=False)
+            r = requests.post(f"{url}/_api/document/python", json={"number": str(random_number)}, auth=auth, verify=False)
+            print(r.json())
+            print(r.status_code)
         time.sleep(0.1)
 
 
