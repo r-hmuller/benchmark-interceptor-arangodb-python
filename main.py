@@ -15,19 +15,19 @@ def test_post_request(url, auth, directory):
         if random_logger_number == 3:
             second_executed = datetime.now()
             start_time = datetime.now()
-            r = requests.post(f"{url}/_api/document/python", json={"number": str(random_number)}, auth=auth, verify=False)
+            r = requests.post(f"{url}/_api/document/python?waitForSync=true", json={"number": str(random_number)}, auth=auth, verify=False)
             print(r.status_code)
             r.close()
             end_time = datetime.now()
             latency_time = end_time - start_time
             with open(f"{directory}/latencies.txt", 'a+') as latencyFile:
                 latencyFile.write(
-                    f"{second_executed.strftime('%m/%d/%Y, %H:%M:%S')},{str(int(round((latency_time.total_seconds() * 1000))))}\n")
+                    f"{second_executed.strftime('%m/%d/%Y, %H:%M:%S')},{str(latency_time.total_seconds())}\n")
 
         else:
-            r = requests.post(f"{url}/_api/document/python", json={"number": str(random_number)}, auth=auth, verify=False)
+            r = requests.post(f"{url}/_api/document/python?waitForSync=true", json={"number": str(random_number)}, auth=auth, verify=False)
             r.close()
-        time.sleep(0.2)
+        time.sleep(0.1)
 
 
 def get_throughput_from_arango(url, auth, initial_requests, directory):
