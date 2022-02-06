@@ -20,9 +20,9 @@ def test_post_request(url, auth, directory):
             r.close()
             end_time = datetime.now()
             latency_time = end_time - start_time
-            with open(f"{directory}/latencies.txt", 'a+') as latencyFile:
+            with open(f"{directory}/latencies.csv", 'a+') as latencyFile:
                 latencyFile.write(
-                    f"{second_executed.strftime('%m/%d/%Y, %H:%M:%S')},{str(latency_time.total_seconds())}\n")
+                    f"{second_executed.strftime('%m/%d/%Y, %H:%M:%S')},{str(latency_time.total_seconds() * 1000)}\n")
 
         else:
             r = requests.post(f"{url}/_api/document/python?waitForSync=true", json={"number": str(random_number)}, auth=auth, verify=False)
@@ -40,7 +40,7 @@ def get_throughput_from_arango(url, auth, initial_requests, directory):
         data = r.json()
         minute_throughput = int(data['http']['requestsPost']) - initial_requests
         initial_requests = data['http']['requestsPost']
-        with open(f"{directory}/throughput.txt", 'a+') as throughputFile:
+        with open(f"{directory}/throughput.csv", 'a+') as throughputFile:
             throughputFile.write(f"{second_executed.strftime('%m/%d/%Y, %H:%M:%S')},{str(minute_throughput)}\n")
 
 
