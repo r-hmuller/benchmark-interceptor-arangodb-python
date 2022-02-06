@@ -17,6 +17,7 @@ def test_post_request(url, auth, directory):
             start_time = datetime.now()
             r = requests.post(f"{url}/_api/document/python", json={"number": str(random_number)}, auth=auth, verify=False)
             print(r.status_code)
+            r.close()
             end_time = datetime.now()
             latency_time = end_time - start_time
             with open(f"{directory}/latencies.txt", 'a+') as latencyFile:
@@ -24,7 +25,8 @@ def test_post_request(url, auth, directory):
                     f"{second_executed.strftime('%m/%d/%Y, %H:%M:%S')},{str(int(round((latency_time.total_seconds() * 1000))))}\n")
 
         else:
-            requests.post(f"{url}/_api/document/python", json={"number": str(random_number)}, auth=auth, verify=False)
+            r = requests.post(f"{url}/_api/document/python", json={"number": str(random_number)}, auth=auth, verify=False)
+            r.close()
         time.sleep(0.1)
 
 
@@ -34,6 +36,7 @@ def get_throughput_from_arango(url, auth, initial_requests, directory):
         time.sleep(60.0 - ((time.time() - start_time) % 60.0))
         second_executed = datetime.now()
         r = requests.get(f"{url}/_admin/statistics", auth=auth, verify=False)
+        r.close()
         data = r.json()
         minute_throughput = int(data['http']['requestsPost']) - initial_requests
         initial_requests = data['http']['requestsPost']
