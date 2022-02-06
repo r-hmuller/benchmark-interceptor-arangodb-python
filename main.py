@@ -27,7 +27,7 @@ def test_post_request(url, auth, directory):
         else:
             r = requests.post(f"{url}/_api/document/python", json={"number": str(random_number)}, auth=auth, verify=False)
             r.close()
-        time.sleep(0.1)
+        time.sleep(0.2)
 
 
 def get_throughput_from_arango(url, auth, initial_requests, directory):
