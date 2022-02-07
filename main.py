@@ -13,7 +13,7 @@ def test_post_request(url, auth, directory):
         random_number = random.randint(0, 100000)
         random_logger_number = random.randint(0, 5)
         if random_logger_number == 3:
-            second_executed = datetime.now()
+            second_executed = time.time()
             start_time = datetime.now()
             r = requests.post(f"{url}/_api/document/python?waitForSync=true", json={"number": str(random_number)}, auth=auth, verify=False)
             print(r.status_code)
@@ -22,7 +22,7 @@ def test_post_request(url, auth, directory):
             latency_time = end_time - start_time
             with open(f"{directory}/latencies.csv", 'a+') as latencyFile:
                 latencyFile.write(
-                    f"{second_executed.strftime('%m/%d/%Y %H:%M:%S')},{str(latency_time.total_seconds() * 1000)}\n")
+                    f"{str(second_executed)},{str(latency_time.total_seconds() * 1000)}\n")
 
         else:
             r = requests.post(f"{url}/_api/document/python?waitForSync=true", json={"number": str(random_number)}, auth=auth, verify=False)
@@ -33,15 +33,15 @@ def test_post_request(url, auth, directory):
 def get_throughput_from_arango(url, auth, initial_requests, directory):
     start_time = time.time()
     while True:
-        time.sleep(60.0 - ((time.time() - start_time) % 60.0))
-        second_executed = datetime.now()
+        time.sleep(1)
+        second_executed = time.time()
         r = requests.get(f"{url}/_admin/statistics", auth=auth, verify=False)
         r.close()
         data = r.json()
         minute_throughput = int(data['http']['requestsPost']) - initial_requests
         initial_requests = data['http']['requestsPost']
         with open(f"{directory}/throughput.csv", 'a+') as throughputFile:
-            throughputFile.write(f"{second_executed.strftime('%m/%d/%Y %H:%M:%S')},{str(minute_throughput)}\n")
+            throughputFile.write(f"{str(second_executed)},{str(minute_throughput)}\n")
 
 
 if __name__ == '__main__':
